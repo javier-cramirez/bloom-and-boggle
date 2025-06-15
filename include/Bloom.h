@@ -23,7 +23,7 @@ private:
     size_t num_bytes;
     unsigned int n_hash_fns;
     uint32_t seed_;
-    std::vector<uint8_t> bit_arr;
+    std::vector<uint8_t> bit_array;
     bool is_full_;
     bool is_empty_;
 }
