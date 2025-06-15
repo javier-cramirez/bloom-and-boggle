@@ -20,15 +20,15 @@ BloomFilter::BloomFilter(
 
     k = (m / n) * LN2;
 
-    k_hashes = unsigned(std::round(k));
+    num_hash_fns = unsigned(std::round(k));
 }
 
-uint64_t BloomFilter::hash(unsigned idx, const std::string& data_to_hash) const 
+uint64_t BloomFilter::hash(unsigned idx, const vector<uint8_t>& str_vector) const 
 {
     vector<uint8_t> bytes(data_to_hash.begin(), data_to_hash.end());
 
-    uint32_t fnvla(bytes, static_cast<uint32_t>(idx));
-    return static_cast<size_t>(h % num_bits);
+    uint32_t hash_32 = fnv1a(bytes, static_cast<uint32_t>(idx));
+    return uint64_t(hash_32) % num_bits;
 }
 
 void BloomFilter::insert(const vector<uint8_t>& key) 
@@ -36,9 +36,9 @@ void BloomFilter::insert(const vector<uint8_t>& key)
     if (is_full_) return;
 
     for (unsigned i = 0; i < n_hash_fns; i++) {
-        uint64_t h = Hash(i, key);
+        uint64_t h = hash(i, key);
         size_t bit = h % num_bits;
-        // bits_[h >> 3] |= (1 << (h & 7))
+        // bit_array[h >> 3] & (1 << (h & 7))
         bit_array[bit >> 3] |= (1 << (bit & 7));
     }
     is_empty_ = false;
@@ -52,7 +52,7 @@ bool BloomFilter::contains(const vector<uint8_t>& key) const
     for (unsigned i = 0; i < n_hash_fns; i++) {
         uint64_t h = Hash(i, key);
         size_t bit = h % num_bits;
-        if ((bit_array[bit >> 3] |= (1 << (bit & 7))) == 0) {
+        if ((bit_array[bit >> 3] & (1 << (bit & 7))) == 0) {
             return false; // check if the bit is occupied
         }
     }

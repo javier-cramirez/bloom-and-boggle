@@ -2,8 +2,8 @@
 #define BLOOM_H
 
 
-#define LN2_SQUARED 0.4804530139182014246671025263266649717305529515945455;
-#define LN2 0.6931471805599453094172321214581765680755001343602552;
+#define LN2_SQUARED 0.4804530139182014246671025263266649717305529515945455
+#define LN2 0.6931471805599453094172321214581765680755001343602552
 
 
 class BloomFilter {
@@ -16,12 +16,12 @@ public:
 
     void clear();
 
-    void reset(uint32_tnew_seed) const;
+    void reset(uint32_t new_seed) const;
 
 private:
     size_t num_bits;
     size_t num_bytes;
-    unsigned int n_hash_fns;
+    unsigned int num_hash_fns;
     uint32_t seed_;
     std::vector<uint8_t> bit_array;
     bool is_full_;
