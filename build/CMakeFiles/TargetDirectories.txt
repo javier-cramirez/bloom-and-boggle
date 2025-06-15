@@ -1,0 +1,8 @@
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/CMakeFiles/bloom.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/CMakeFiles/test.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/tests/CMakeFiles/test_hash.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/tests/CMakeFiles/test.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/tests/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Owner/Documents/bloom-and-boggle/build/tests/CMakeFiles/rebuild_cache.dir

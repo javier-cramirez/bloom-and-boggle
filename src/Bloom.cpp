@@ -1,6 +1,7 @@
 #include "Bloom.h"
 #include "HashFunctions.h"
 #include <limits>
+#include <algorithm>
 
 using std::vector;
 
@@ -18,25 +19,23 @@ BloomFilter::BloomFilter(
     num_bytes = (num_bits + 7) / 8;
     bit_array.assign(num_bytes, 0);
 
-    k = (m / n) * LN2;
+    float k = (m / n) * LN2;
 
     num_hash_fns = unsigned(std::round(k));
 }
 
-uint64_t BloomFilter::hash(unsigned idx, const vector<uint8_t>& str_vector) const 
+uint32_t BloomFilter::hash(uint32_t idx, const vector<uint8_t>& str_vector) const 
 {
-    vector<uint8_t> bytes(data_to_hash.begin(), data_to_hash.end());
-
-    uint32_t hash_32 = fnv1a(bytes, static_cast<uint32_t>(idx));
-    return uint64_t(hash_32) % num_bits;
+    uint32_t hash_32 = fnv1a(str_vector, seed_ ^ idx);
+    return hash_32 % num_bits;
 }
 
 void BloomFilter::insert(const vector<uint8_t>& key) 
 {
     if (is_full_) return;
 
-    for (unsigned i = 0; i < n_hash_fns; i++) {
-        uint64_t h = hash(i, key);
+    for (unsigned i = 0; i < num_hash_fns; i++) {
+        uint32_t h = hash(i, key);
         size_t bit = h % num_bits;
         // bit_array[h >> 3] & (1 << (h & 7))
         bit_array[bit >> 3] |= (1 << (bit & 7));
@@ -49,8 +48,8 @@ bool BloomFilter::contains(const vector<uint8_t>& key) const
     if (is_full_) return true;
     if (is_empty_) return false;
 
-    for (unsigned i = 0; i < n_hash_fns; i++) {
-        uint64_t h = Hash(i, key);
+    for (unsigned i = 0; i < num_hash_fns; i++) {
+        uint32_t h = hash(i, key);
         size_t bit = h % num_bits;
         if ((bit_array[bit >> 3] & (1 << (bit & 7))) == 0) {
             return false; // check if the bit is occupied
