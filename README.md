@@ -5,7 +5,7 @@ A small library for implementing a Boggle solver using:
 - a trie (prefix tree) for fast lookups depending on the boggle filter's answer to query $q$
 
 Boggle filters enable us to create a dictionary of all valid tokens, with small memory footprint. Of course, this depends on 
-our choice for $\epsilon$ which trades memory for better false positive accuracy. 
+our choice for $\epsilon$ which requires more memory for better false positive accuracy. 
 
 ## TO-DO
 - Work on the Boggle solver UI 
