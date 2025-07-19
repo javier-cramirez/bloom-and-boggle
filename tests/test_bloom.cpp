@@ -1,20 +1,31 @@
-#include "BloomFilter.h"
+#include "Bloom.h"
+#define CATCH_CONFIG_MAIN
+#include <catch.hpp>
 #include <iostream>
 #include <random>
 
-int main() {
-    // ~5000 items, 0.5% false positives
-    BloomFilter bf(5000, 0.005, std::random_device{}());
+TEST_CASE("BloomFilter, basic membership", "[bloom]") {
+    constexpr uint32_t SEED = 12345;    
+    BloomFilter bf(1000, 0.01, SEED);
 
-    // Example keys as byte-vectors:
-    std::vector<uint8_t> alice{ 'a','l','i','c','e' };
-    std::vector<uint8_t> bob  { 'b','o','b'   };
+    auto alice = std::vector<uint8_t>{'a', 'l', 'i', 'c', 'e'};
+    auto bob = std::vector<uint8_t>{'b', 'o', 'b'};
+    auto carol = std::vector<uint8_t>{'c', 'a', 'r', 'o', 'l'};
 
-    bf.insert(alice);
-    bf.insert(bob);
-
-    for (auto name : { alice, bob, std::vector<uint8_t>{'c','a','r','o','l'} }) {
-        bool maybe = bf.contains(name);
-        std::cout << (maybe ? "maybe in set\n" : "definitely not\n");
+    SECTION("Inserted items could be in set") {
+        bf.insert(alice);
+        bf.insert(bob);
+        REQUIRE(bf.contains(alice));
+        REQUIRE(bf.contains(bob));
     }
-}
+
+    SECTION("Non-inserted items (with high p) not in set") {
+        const int n = 100;
+        int fp = 0;
+        for (int i = 0; i < n; i++) 
+            if (bf.contains(carol)) 
+                fp++;
+        REQUIRE (fp < 5); 
+    }
+} 
+
